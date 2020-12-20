@@ -1,1 +1,3 @@
 *.wasm
+wasm-module-*.js
+index.html
