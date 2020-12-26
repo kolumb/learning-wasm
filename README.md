@@ -25,7 +25,7 @@ Dependencies:
     (export "double" (func $double))
 )
 ```
-* Write js code that uses the module in `script.js`. Call exported functions from `module` object.
+* Write js code that uses the module in `your-module/script.js`.
 ```js
 console.log(module.add(1, 2));
 console.log(module.double(34));
@@ -34,14 +34,11 @@ console.log(module.double(34));
 ### Build
 Build all `*.wat` files:
 ```console
-> node wasm2js.js
+> node build
 ```
 Build only specific ones:
 ```console
-> node wasm2js.js module module2
+> node build module module2
 ```
 
 Launch `index.html` in browser. No need to start http-server.
-
-### TODO
-- [ ] Add build with Deno.
