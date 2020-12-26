@@ -32,21 +32,16 @@ console.log(module.double(34));
 ```
 
 ### Build
-#### Windows
+Build all `*.wat` files:
 ```console
-> build <module-name>
+> node wasm2js.js
+```
+Build only specific ones:
+```console
+> node wasm2js.js module module2
 ```
 
 Launch `index.html` in browser. No need to start http-server.
 
-### How it works
-1. `wat2wasm` tool compiles WebAssembly text format to binary.
-1. `wasm2js` script converts binary file to `base64` and links with `script.js` to create `wasm-module-?.js`.
-1. `BatchSubstitute.bat` replaces module name with yours in `index-template.html`.
-1. That way created `index.html` includes link to your `wasm-module-?.js` module.
-
 ### TODO
-- [ ] Check if index.html for module was already generated. It should contain link to main index page.
-    - [ ] Gel list of folders containing index.html
-- [ ] build command should build all wat files, or list of specified. (extention is optional)
 - [ ] Add build with Deno.
