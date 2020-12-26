@@ -3,8 +3,8 @@ const { execSync } = require('child_process');
 
 const moduleName = process.argv[2];
 const folderName = "./" + moduleName;
+const sources = fs.readdirSync("./").filter(file => file.endsWith(".wat"));
 if (!fs.existsSync(moduleName + ".wat")) {
-    const sources = fs.readdirSync("./").filter(file => file.endsWith(".wat"));
     if(sources.length > 0) {
         console.log(moduleName + ".wat not found. Avaiable sources are:")
         sources.forEach(file => console.log(file));
@@ -46,5 +46,18 @@ WebAssembly.instantiate(moduleBuffer).then(resultObject => {
 
 const jsModuleSourcePath = `${folderName}/wasm-module-${moduleName}.js`;
 const wasmModule = fs.readFileSync(modulePath).toString("base64");
-const jsModuleInstantiationCode = `const moduleBuffer = Uint8Array.from(atob("${wasmModule}"), c => c.charCodeAt(0));`
+const jsModuleInstantiationCode = `"use strict";
+const moduleBuffer = Uint8Array.from(atob("${wasmModule}"), c => c.charCodeAt(0));`
 fs.writeFileSync(jsModuleSourcePath, jsModuleInstantiationCode);
+const list = sources.reduce((acc, file)=>{
+    const folderName = file.slice(0, -4);
+    return acc
+        + (fs.existsSync(folderName + "/index.html")
+        ? `<li><a href="${folderName}/index.html">${folderName}</a></li>`
+        : '');
+}, "");
+const indexPage = `<!DOCTYPE html><html>
+<head><meta charset="utf-8"><title>List of compiled modules</title></head>
+<body><p>List of compiled modules:</p><ul>${list}</ul></body>
+</html>`;
+fs.writeFileSync("./index.html", indexPage);
