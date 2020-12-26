@@ -5,12 +5,6 @@
         (i32.add)
     )
     (export "add" (func $add))
-    (func $double (param $p1 i32) (result i32)
-        (local.get $p1)
-        (local.get $p1)
-        (i32.add)
-    )
-    (export "double" (func $double))
 )
 ;; comment
 (;

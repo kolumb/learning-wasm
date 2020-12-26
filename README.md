@@ -46,10 +46,7 @@ Launch `index.html` in browser. No need to start http-server.
 1. That way created `index.html` includes link to your `wasm-module-?.js` module.
 
 ### TODO
-- [ ] Replace batch script with js text in file replacement implementation.
-- [ ] Generate a folder for each module with main index page.
 - [ ] Check if index.html for module was already generated. It should contain link to main index page.
-- [ ] Split script.js into module itself (replacable) and one-time generated initialisation template.
-- [ ] Add separate templates folder.
+    - [ ] Gel list of folders containing index.html
 - [ ] build command should build all wat files, or list of specified. (extention is optional)
-- [ ] Replace Node.js with Deno.
+- [ ] Add build with Deno.
