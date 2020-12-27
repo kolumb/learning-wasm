@@ -25,7 +25,8 @@ Dependencies:
     (export "double" (func $double))
 )
 ```
-* Write js code that uses the module in `your-module/script.js`.
+* Build this module.
+* Write js code that uses the module in `module-name/script.js`.
 ```js
 console.log(module.add(1, 2));
 console.log(module.double(34));
@@ -42,3 +43,20 @@ Build only specific ones:
 ```
 
 Launch `index.html` in browser. No need to start http-server.
+
+### Cheat-sheet
+token | meaning
+----|----
+;; | single-line comment
+(; ;) | multi-line comment
+module | Collection of functions
+type | declaration for functions is optional
+func | declaration with named index
+export | func from stack
+param | indexed (name is optional)
+i32.add | i32 i32 → i32
+i32.popcnt | count bites = 1
+f32.sqrt | sqrt
+i64.eqz | equal to zero
+f64.lt | less than
+i32.trunc_s/f32 | f32→i32

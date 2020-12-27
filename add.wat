@@ -6,13 +6,3 @@
     )
     (export "add" (func $add))
 )
-;; comment
-(;
-module
-func
-param
-result <type>
-i32
-    add
-export
-;)
