@@ -20,12 +20,12 @@ moduleNames && moduleNames.forEach(name => {
 })
 const moduleName = new URLSearchParams(location.search).get("module")
 if (moduleName) {
-    const widthOfWord = 16 * 2
     const scriptElem = document.createElement("script")
     scriptElem.src = `./${moduleName}/wasm-module-${moduleName}.js`
     document.body.appendChild(scriptElem)
     scriptElem.addEventListener("load", e => {
         const view = new Uint8Array(moduleBuffer)
+        const widthOfWord = 8 * 2
         for (let i = 0; i < view.length; i++) {
             printByte(view[i])
             if (i % 8 === 7) {
@@ -36,25 +36,24 @@ if (moduleName) {
             }
         }
         const ctx = canvasElem.getContext("2d", {alpha: false})
-        const scale = 3
+        const scale = 10
         const padding = 1
         const width = widthOfWord * 8
-        const height = Math.ceil(view.length / width)
+        const height = Math.ceil(view.length / widthOfWord)
         canvasElem.width = (padding + width + widthOfWord * 2) * scale
-        canvasElem.height = (padding + height) * 2 * scale * 2
+        canvasElem.height = (padding + height) * 2 * scale
         ctx.fillStyle = "white"
         ctx.fillRect(0, 0, canvasElem.width, canvasElem.height)
         for (let i = 0; i < view.length; i++) {
             const x = (i * 8) % width
             const y = Math.floor((i * 8) / width)
-            // console.log(i, x, y)
             for (let j = 0; j < 8; j++) {
                 if (view[i] & 2 ** j) {
                     ctx.fillStyle = "black"
                 } else {
                     ctx.fillStyle = "lightgrey"
                 }
-                ctx.fillRect((padding + x + j + Math.floor(x / widthOfWord) * scale) * scale + x / 2, (padding + y) * scale * 2, 2, 2)
+                ctx.fillRect((padding + x + j + Math.floor(x / 8) + Math.floor(x / 64) * 2) * scale, (padding + y) * scale * 2, Math.ceil(2 * scale / 3), Math.ceil(2 * scale / 3))
             }
         }
     })
