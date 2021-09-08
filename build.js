@@ -60,3 +60,5 @@ const indexPage = `<!DOCTYPE html><html>
 <body><p>List of compiled modules:</p><ul>${list}</ul></body>
 </html>`;
 fs.writeFileSync("./index.html", indexPage);
+
+fs.writeFileSync("./module-names.js", `"use strict";\nmoduleNames = ${JSON.stringify(moduleNames)};\n`);
