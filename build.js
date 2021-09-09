@@ -57,7 +57,11 @@ const list = sources.reduce((acc, file)=>{
 }, "");
 const indexPage = `<!DOCTYPE html><html>
 <head><meta charset="utf-8"><title>List of compiled modules</title></head>
-<body><p>List of compiled modules:</p><ul>${list}</ul></body>
+<body>
+    <p>List of compiled modules:</p>
+    <ul>${list}</ul>
+    <a href="./inspector.html">Inspector</a>
+</body>
 </html>`;
 fs.writeFileSync("./index.html", indexPage);
 

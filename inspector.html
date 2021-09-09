@@ -3,11 +3,17 @@
 <head>
     <meta charset="utf-8">
     <title>Wasm file inspector</title>
+    <style>
+    #CanvasElem {
+        outline: 1px solid lightgrey;
+    }
+    </style>
     <script>let moduleNames;</script>
     <script defer src="module-names.js"></script>
     <script defer src="inspector.js"></script>
 </head>
 <body>
+    <a href="index.html">Main</a>
     <nav>
         <ul id="ListOfModulesElem"></ul>
     </nav>
