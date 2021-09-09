@@ -51,10 +51,11 @@ byte | token            | meaning
      | (; ;)            | multi-line comment
      | module           | collection of functions
      | type             | declaration for functions is optional
-     | func             | declaration with named index
+60   | func             | declaration with named index
      | export           | func from stack
      | param            | indexed (name is optional)
 20   | local.get        | get value of local variable by index
+7f   | i32              | i32 i32 -> i32
 6a   | i32.add          | i32 i32 -> i32
      | i32.popcnt       | count bites = 1
      | f32.sqrt         | sqrt
@@ -70,13 +71,14 @@ N of bytes | example value | meaning
 4          | 01 00 00 00   | wasm version number
 1          | 01            | type header section
 1          | 07            | number of bytes with type
-7          | -             | -
+7          | -             | 01 60 02 7f 7f 01 7f
 1          | 03            | function header section
 1          | 02            | number of bytes with function definition
-2          | -             | -
+2          | -             | 01 00
 1          | 07            | export header section
 1          | 07            | number of bytes with export data
-7          | ..61 64 64..  | name of exported function ("add")
+7          | -             | 01 03 61 64 64 00 00
+           | ..61 64 64..  | name of exported function ("add")
 1          | 0a            | code section
 1          | 09            | number of bytes with code
 3          | 01 07 00      | body of function with index `0`
