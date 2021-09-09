@@ -45,18 +45,38 @@ Build only specific ones:
 Launch `index.html` in browser. No need to start http-server.
 
 ### Cheat-sheet
-token | meaning
-----|----
-;; | single-line comment
-(; ;) | multi-line comment
-module | Collection of functions
-type | declaration for functions is optional
-func | declaration with named index
-export | func from stack
-param | indexed (name is optional)
-i32.add | i32 i32 → i32
-i32.popcnt | count bites = 1
-f32.sqrt | sqrt
-i64.eqz | equal to zero
-f64.lt | less than
-i32.trunc_s/f32 | f32→i32
+byte | token            | meaning
+-----|------------------|--------------------------------------
+     | ;;               | single-line comment
+     | (; ;)            | multi-line comment
+     | module           | collection of functions
+     | type             | declaration for functions is optional
+     | func             | declaration with named index
+     | export           | func from stack
+     | param            | indexed (name is optional)
+20   | local.get        | get value of local variable by index
+6a   | i32.add          | i32 i32 -> i32
+     | i32.popcnt       | count bites = 1
+     | f32.sqrt         | sqrt
+     | i64.eqz          | equal to zero
+     | f64.lt           | less than
+     | i32.trunc_s/f32  | f32 -> i32
+0b   | end              | end of program
+
+### Wasm file anatomy (based on `add` module)
+N of bytes | example value | meaning
+-----------|---------------|--------------
+4          | 00 61 73 6d   | file signature (Magic bytes) "asm"
+4          | 01 00 00 00   | wasm version number
+1          | 01            | type header section
+1          | 07            | number of bytes with type
+7          | -             | -
+1          | 03            | function header section
+1          | 02            | number of bytes with function definition
+2          | -             | -
+1          | 07            | export header section
+1          | 07            | number of bytes with export data
+7          | ..61 64 64..  | name of exported function ("add")
+1          | 0a            | code section
+1          | 09            | number of bytes with code
+3          | 01 07 00      | body of function with index `0`
