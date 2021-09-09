@@ -109,10 +109,10 @@ N of bytes | example value | meaning
 1          | 01            | type header section
 1          | 0c            | number of bytes with types
 12         | ->            | 02 60 02 7f 7f 01 7f 60 01 7f 01 7f
-//         |               | two types for functions. 2in 1out. 1in 1out
+//         |               | two types for functions. 2 in 1 out. 1 in 1 out
 1          | 03            | function header section
 1          | 03            | number of bytes with function definition
-2          | ->            | 02 00 01
+3          | ->            | 02 00 01
 //         |               | two functions with index `0` and `1`
 1          | 07            | export header section
 1          | 10            | number of bytes with export data
@@ -124,3 +124,40 @@ N of bytes | example value | meaning
 1          | 11            | number of bytes with code
 17         | ->            | 02  07 00 20 00 20 01 6a 0b  07 00 20 00 20 00 6a 0b
 //         |               | two blocks of code both with length of 7 bytes.
+
+### Wasm file anatomy (based on `fib` module)
+```
+00 61 73 6d 01 00 00 00  01 06 01 60 01 7f 01 7f
+03 02 01 00 07 07 01 03  66 69 62 00 00 0a 2c 01
+2a 01 02 7f 41 01 21 02  02 40 03 40 20 00 41 00
+4c 0d 01 20 01 20 02 22  01 6a 21 02 20 00 41 01
+6b 21 00 0c 00 0b 0b 20  02 0f 0b
+```
+
+01 02 7f 41 01 21 02  02 40 03 40 20 00 41 00
+4c 0d 01 20 01 20 02 22  01 6a 21 02 20 00 41 01
+6b 21 00 0c 00 0b 0b 20  02 0f 0b
+
+N of bytes | example value | meaning
+-----------|---------------|--------------
+4          | 00 61 73 6d   | file signature (Magic bytes) "\0asm"
+4          | 01 00 00 00   | wasm version number
+1          | 01            | type header section
+1          | 06            | number of bytes with types
+6          | ->            | 01 60 01 7f 01 7f
+//         |               | one type for functions. 1 in 1 out
+1          | 03            | function header section
+1          | 02            | number of bytes with function definition
+2          | ->            | 01 00
+//         |               | one function with index `0`
+1          | 07            | export header section
+1          | 07            | number of bytes with export data
+7          | ->            | 01 03 66 69 62 00 00
+//         |               | one function name with length of 3 which corresponds to function with index `0`
+//         | ..66 69 62..  | name of exported function ("fib\0")
+1          | 0a            | code section
+1          | 2c            | number of bytes with code
+44         | ->            | 01  2a 01 02 7f 41 01 21 02  02 40 03 40 20 00 41 00
+//         |               | 4c 0d 01 20 01 20 02 22  01 6a 21 02 20 00 41 01
+//         |               | 6b 21 00 0c 00 0b 0b 20  02 0f 0b
+//         |               | one block of code both with length of 42 bytes.
