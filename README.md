@@ -64,15 +64,16 @@ Launch `index.html` in browser. No need to start http-server.
 | 20   | local.get        | get value of local variable by index
 | 21   | local.set        | set value of local variable by index using a value on the stack
 | 22   | local.tee        | set value from stack and put it back on stack (set without consuming)
+| 7d   | f32              | 32 bit float type
+|      | f64.lt           | less than
+| 91   | f32.sqrt         | sqrt
 | 7f   | i32              | 32 bit integer type
 | 41   | i32.const        | declare constant value on stack
 | 6a   | i32.add          | i32 i32 -> i32
-|      | i32.popcnt       | count bites = 1
-|      | f32.sqrt         | sqrt
-|      | i64.eqz          | equal to zero
-|      | f64.lt           | less than
+| 69   | i32.popcnt       | count bites = 1
 | 4c   | i32.le_s         | less than or equal
-|      | i32.trunc_s/f32  | f32 -> i32
+| a8   | i32.trunc_s/f32  | f32 -> i32 (i32.trunc_f32_s)
+|      | i64.eqz          | equal to zero
 
 Notes:
 In function all variables are indexed. Arguments has 0, 1 ... And local variables have next indices e.g. 2, 3 etc.
@@ -91,7 +92,7 @@ In function all variables are indexed. Arguments has 0, 1 ... And local variable
 | 1          | 01            | type header section
 | 1          | 07            | number of bytes with types
 | 7          | ->            | 01 60 02 7f 7f 01 7f
-|            |               | one type for function with 2 params and 1 output (all ints)
+|            |               | one type for function with 2 params and 1 output (all `int`)
 | 1          | 03            | function header section
 | 1          | 02            | number of bytes with function definition
 | 2          | ->            | 01 00
@@ -135,7 +136,7 @@ In function all variables are indexed. Arguments has 0, 1 ... And local variable
 | 1          | 0a            | code section
 | 1          | 11            | number of bytes with code
 | 17         | ->            | 02  07 00 20 00 20 01 6a 0b  07 00 20 00 20 00 6a 0b
-|            |               | two blocks of code both with length of 7 bytes.
+|            |               | two blocks of code both with length of 7 bytes
 
 ### Wasm file anatomy (`fib` module)
 ```
@@ -168,7 +169,7 @@ In function all variables are indexed. Arguments has 0, 1 ... And local variable
 | 44         | ->            | 01  2a 01 02 7f 41 01 21 02  02 40 03 40 20 00 41 00
 |            |               | 4c 0d 01 20 01 20 02 22  01 6a 21 02 20 00 41 01
 |            |               | 6b 21 00 0c 00 0b 0b 20  02 0f 0b
-|            | 01 2a         | one block of code both with length of 42 bytes.
+|            | 01 2a         | one block of code both with length of 42 bytes
 |            | 01            | ???
 |            | 02 7f         | allocate two int
 |            | 41 01         | put 1 on a stack
@@ -190,4 +191,41 @@ In function all variables are indexed. Arguments has 0, 1 ... And local variable
 |            | 0b 0b         | ends of blocks
 |            | 20 02         | get local 2
 |            | 0f            | return
+|            | 0b            | ends a block
+
+### Wasm file anatomy (`popcnt` module)
+```
+00 61 73 6d 01 00 00 00  01 06 01 60 01 7d 01 7f
+03 02 01 00 07 0a 01 06  70 6f 70 63 6e 74 00 00
+0a 0c 01 0a 00 20 00 91  a8 41 01 6b 69 0b
+```
+
+| N of bytes | value         | meaning
+| -----------|---------------|--------------
+| 4          | 00 61 73 6d   | file signature (Magic bytes) "\0asm"
+| 4          | 01 00 00 00   | wasm version number
+| 1          | 01            | type header section
+| 1          | 06            | number of bytes with types
+| 6          | ->            | 01 60 01 7d 01 7f
+|            |               | one type for functions. 1 f32 in 1 i32 out
+| 1          | 03            | function header section
+| 1          | 02            | number of bytes with function definition
+| 2          | ->            | 01 00
+|            |               | one function with index `0`
+| 1          | 07            | export header section
+| 1          | 0a            | number of bytes with export data
+| 10         | ->            | 01 06 70 6f 70 63 6e 74 00 00
+|            |               | one function name with length of 6 which corresponds to function with index `0`
+|            | 706f70636e74  | name of exported function ("popcnt\0")
+| 1          | 0a            | code section
+| 1          | 0c            | number of bytes with code
+| 12         | ->            | 01 0a 00 20 00 91 a8 41 01 6b 69 0b
+|            | 01 0a         | one block of code both with length of 10 bytes
+|            | 00            | ???
+|            | 20 00         | get argument on stack
+|            | 91            | f32.sqrt
+|            | a8            | i32.trunc_f32_s
+|            | 41 01         | put 1 on a stack
+|            | 6b            | result - 1
+|            | 69            | i32.popcnt
 |            | 0b            | ends a block
