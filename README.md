@@ -45,35 +45,38 @@ Build only specific ones:
 Launch `index.html` in browser. No need to start http-server.
 
 ### Cheat-sheet
-| byte | token            | meaning
-|------|------------------|--------------------------------------
-|      | ;;               | single-line comment
-|      | (; ;)            | multi-line comment
-|      | module           | collection of functions
-| 01   | type             | declaration for functions is optional
-| 03   | func             | declaration with named index
-| 07   | export           | func from stack
-| 60   | param            | indexed (name is optional)
-|      | result           | accepts a type
-| 40   | block            | start block of code (02)
-| 40   | loop             | start block of code (03)
-| 0b   | end              | end block of code
-| 0c   | br               | breack provided index of block (from end)
-| 0d   | br_if            | breack if comparison was successful by provided index of block (from end)
-| 0f   | return           | Is it optional?
-| 20   | local.get        | get value of local variable by index
-| 21   | local.set        | set value of local variable by index using a value on the stack
-| 22   | local.tee        | set value from stack and put it back on stack (set without consuming)
-| 7d   | f32              | 32 bit float type
-|      | f64.lt           | less than
-| 91   | f32.sqrt         | sqrt
-| 7f   | i32              | 32 bit integer type
-| 41   | i32.const        | declare constant value on stack
-| 6a   | i32.add          | i32 i32 -> i32
-| 69   | i32.popcnt       | count bites = 1
-| 4c   | i32.le_s         | less than or equal
-| a8   | i32.trunc_s/f32  | f32 -> i32 (i32.trunc_f32_s)
-|      | i64.eqz          | equal to zero
+| Opcode | token            | meaning
+|--------|------------------|--------------------------------------
+|        | ;;               | single-line comment
+|        | (; ;)            | multi-line comment
+|        | module           | collection of functions
+| 01     | type             | declaration for functions is optional
+| 03     | func             | declaration with named index
+| 07     | export           | func from stack
+| 60     | param            | indexed (name is optional)
+|        | result           | accepts a type
+| 40     |                  | pseudo type for block
+| 02     | block            | start block of code. May or my not return a value. (can accept a label?)
+| 03     | loop             | start block that can be used as a loop if you break from it. (can accept a label?)
+| 0b     | end              | end block of code
+| 0c     | br               | breack provided index of block (from end)
+| 0d     | br_if            | breack if comparison was successful by provided index of block (from end)
+| 0f     | return           | Is it optional?
+| 20     | local.get        | get value of local variable by index
+| 21     | local.set        | set value of local variable by index using a value on the stack
+| 22     | local.tee        | set value from stack and put it back on stack (set without consuming)
+| 7f     | i32              | 32 bit integer type
+| 41     | i32.const        | declare constant value on stack
+| 6a     | i32.add          | i32 i32 -> i32
+| 69     | i32.popcnt       | count bites = 1
+| 4c     | i32.le_s         | less than or equal
+| a8     | i32.trunc_s/f32  | f32 -> i32 (i32.trunc_f32_s)
+| 7e     | i64              | 64 bit float type
+|        | i64.eqz          | equal to zero
+| 7d     | f32              | 32 bit float type
+| 91     | f32.sqrt         | sqrt
+| 7c     | f64              | 64 bit float type
+|        | f64.lt           | less than
 
 Notes:
 In function all variables are indexed. Arguments has 0, 1 ... And local variables have next indices e.g. 2, 3 etc.
