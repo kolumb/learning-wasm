@@ -99,7 +99,7 @@ In function all variables are indexed. Arguments has 0, 1 ... And local variable
 | 1          | 03            | function header section
 | 1          | 02            | number of bytes with function definition
 | 2          | ->            | 01 00
-|            |               | one function with index `0`
+|            |               | one function with type `0`
 | 1          | 07            | export header section
 | 1          | 07            | number of bytes with export data
 | 7          | ->            | 01 03 61 64 64 00 00
@@ -129,7 +129,7 @@ In function all variables are indexed. Arguments has 0, 1 ... And local variable
 | 1          | 03            | function header section
 | 1          | 03            | number of bytes with function definition
 | 3          | ->            | 02 00 01
-|            |               | two functions with index `0` and `1`
+|            |               | two functions with types `0` and `1`
 | 1          | 07            | export header section
 | 1          | 10            | number of bytes with export data
 | 16         | ->            | 02 03 61 64  64 00 00 06  64 6f 75 62  6c 65 00 01
@@ -161,7 +161,7 @@ In function all variables are indexed. Arguments has 0, 1 ... And local variable
 | 1          | 03            | function header section
 | 1          | 02            | number of bytes with function definition
 | 2          | ->            | 01 00
-|            |               | one function with index `0`
+|            |               | one function with type `0`
 | 1          | 07            | export header section
 | 1          | 07            | number of bytes with export data
 | 7          | ->            | 01 03 66 69 62 00 00
@@ -214,7 +214,7 @@ In function all variables are indexed. Arguments has 0, 1 ... And local variable
 | 1          | 03            | function header section
 | 1          | 02            | number of bytes with function definition
 | 2          | ->            | 01 00
-|            |               | one function with index `0`
+|            |               | one function with type `0`
 | 1          | 07            | export header section
 | 1          | 0a            | number of bytes with export data
 | 10         | ->            | 01 06 70 6f 70 63 6e 74 00 00
