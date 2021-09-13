@@ -1,8 +1,8 @@
 Minimalistic playground to learn WebAssembly text format.
 
 Dependencies:
-[Node.js](https://nodejs.org/)
-[WABT: The WebAssembly Binary Toolkit](https://github.com/WebAssembly/wabt)
+- [Node.js](https://nodejs.org/)
+- [WABT: The WebAssembly Binary Toolkit](https://github.com/WebAssembly/wabt)
 
 
 ### How to create new module
