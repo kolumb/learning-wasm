@@ -7,7 +7,17 @@
         <script defer src="script.js"></script>
     </head>
     <body>
-        <p><a href="../index.html">Main</a> <a href="../inspector.html?module=popcnt">Inspector</a></p>
+        <p><a href="../">Main</a> <a href="../inspector/?module=popcnt">Inspector</a></p>
         <p>Module <strong>popcnt</strong> output:</p>
+
+        <script>
+            // Fix links for local pages.
+            if (location.protocol === "file:") {
+                Array.from(document.querySelectorAll("a")).forEach(a => {
+                    a.href = a.href.replace(/\/$/, "/index.html")
+                    a.href = a.href.replace(/\/\?/, "/index.html?")
+                })
+            }
+        </script>
     </body>
 </html>

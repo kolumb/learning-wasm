@@ -46,7 +46,8 @@ moduleNames && moduleNames.forEach(name => {
     if (name === moduleName) {
         link.classList.add("current-module")
     }
-    link.href = `./inspector.html?module=${name}`
+    const fixLocalLinks = location.protocol === "file:" ? "index.html" : ""
+    link.href = `./${fixLocalLinks}?module=${name}`
     link.textContent = name
     const li = document.createElement("li")
     li.appendChild(link)
@@ -54,7 +55,7 @@ moduleNames && moduleNames.forEach(name => {
 })
 if (moduleName) {
     const scriptElem = document.createElement("script")
-    scriptElem.src = `./${moduleName}/wasm-module-${moduleName}.js`
+    scriptElem.src = `../${moduleName}/wasm-module-${moduleName}.js`
     document.body.appendChild(scriptElem)
     scriptElem.addEventListener("load", e => {
         const view = new Uint8Array(moduleBuffer)

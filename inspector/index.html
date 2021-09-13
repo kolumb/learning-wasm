@@ -19,7 +19,7 @@
     <script defer src="inspector.js"></script>
 </head>
 <body>
-    <p><a href="index.html">Main</a> Inspector</p>
+    <p><a href="../">Main</a> Inspector</p>
     <p>List of compiled modules:</p>
     <nav>
         <ul id="ListOfModulesElem"></ul>
@@ -27,5 +27,12 @@
     <pre><code id="DisplayElem"></code></pre>
     <canvas id="CanvasElem"></canvas>
     <div id="PartsElem"></div>
+
+    <script>
+        // Fix links for local pages.
+        if (location.protocol === "file:") {
+            Array.from(document.querySelectorAll("a")).forEach(a => a.href = a.href.replace(/\/$/, "/index.html"))
+        }
+    </script>
 </body>
 </html>
