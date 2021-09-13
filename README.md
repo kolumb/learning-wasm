@@ -7,7 +7,7 @@ Dependencies:
 
 ### How to create new module
 
-* Create `<module-name>.wat` file with module.
+* Create `<module-name>.wat` file in `src` folder with module.
 ```wat
 (module
     (func $add (param $p1 i32) (param $p2 i32) (result i32)
