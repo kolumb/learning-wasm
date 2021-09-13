@@ -61,7 +61,7 @@ const indexPage = `<!DOCTYPE html><html>
 <head><meta charset="utf-8"><title>List of compiled modules</title></head>
 <body>
     <p>Main <a href="./inspector/">Inspector</a></p>
-    <p>List of compiled modules:</p>
+    <p>List of modules for execution:</p>
     <ul>${list}</ul>
 
     <script>
