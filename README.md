@@ -1,6 +1,6 @@
 Minimalistic playground to learn WebAssembly text format.
 
-Demo: https://kolumb.github.io/learning-wasm/executor.html
+Demo: [https://kolumb.github.io/learning-wasm/executor.html](https://kolumb.github.io/learning-wasm/executor.html)
 
 Dependencies:
 - [Node.js](https://nodejs.org/)
