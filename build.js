@@ -60,7 +60,7 @@ const list = sources.reduce((acc, file)=>{
 const indexPage = `<!DOCTYPE html><html>
 <head><meta charset="utf-8"><title>List of compiled modules</title></head>
 <body>
-    <p>Main <a href="./inspector/">Inspector</a></p>
+    <p>Executor <a href="./inspector/">Inspector</a></p>
     <p>List of modules for execution:</p>
     <ul>${list}</ul>
 
@@ -72,6 +72,6 @@ const indexPage = `<!DOCTYPE html><html>
     </script>
 </body>
 </html>`;
-fs.writeFileSync("./index.html", indexPage);
+fs.writeFileSync("./executor.html", indexPage);
 
 fs.writeFileSync("./inspector/module-names.js", `"use strict";\nmoduleNames = ${JSON.stringify(moduleNames)};\n`);

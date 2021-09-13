@@ -42,7 +42,7 @@ Build only specific ones:
 > node build module module2
 ```
 
-Launch `index.html` in browser. No need to start http-server.
+Launch `executor.html` in browser. No need to start http-server.
 
 ### Cheat-sheet
 | Opcode | token            | meaning
