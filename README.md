@@ -10,29 +10,10 @@ Dependencies:
 ### How to create new module
 
 * Create `<module-name>.wat` file in `src` folder with module.
-```wat
-(module
-    (func $add (param $p1 i32) (param $p2 i32) (result i32)
-        (local.get $p1)
-        (local.get $p2)
-        (i32.add)
-    )
-    (export "add" (func $add))
-
-    (func $double (param $p1 i32) (result i32)
-        (local.get $p1)
-        (local.get $p1)
-        (i32.add)
-    )
-    (export "double" (func $double))
-)
-```
 * [Build](#build) this module.
 * Write js code that uses the module in `module-name/script.js`.
-```js
-console.log(module.add(1, 2));
-console.log(module.double(34));
-```
+* Launch `executor.html` in browser. No need to start http-server.
+
 <a name="build"></a>
 ### Build
 Build all `*.wat` files:
@@ -44,7 +25,6 @@ Build only specific ones:
 > node build module module2
 ```
 
-Launch `executor.html` in browser. No need to start http-server.
 
 ### Cheat-sheet
 | Opcode | token            | meaning
