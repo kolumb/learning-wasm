@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <title>Wasm file inspector</title>
     <style>
+    .current-module {
+        color: black;
+    }
     #CanvasElem {
         outline: 1px solid lightgrey;
     }
@@ -16,7 +19,8 @@
     <script defer src="inspector.js"></script>
 </head>
 <body>
-    <a href="index.html">Main</a>
+    <p><a href="index.html">Main</a> Inspector</p>
+    <p>List of compiled modules:</p>
     <nav>
         <ul id="ListOfModulesElem"></ul>
     </nav>

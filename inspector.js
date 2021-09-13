@@ -37,15 +37,21 @@ function getType(byte) {
     }
 }
 
+let moduleName = new URLSearchParams(location.search).get("module")
+if (!moduleName && moduleNames && moduleNames[0]) {
+    moduleName = moduleNames[0]
+}
 moduleNames && moduleNames.forEach(name => {
     const link = document.createElement("a")
+    if (name === moduleName) {
+        link.classList.add("current-module")
+    }
     link.href = `./inspector.html?module=${name}`
     link.textContent = name
     const li = document.createElement("li")
     li.appendChild(link)
     listOfModulesElem.appendChild(li)
 })
-const moduleName = new URLSearchParams(location.search).get("module")
 if (moduleName) {
     const scriptElem = document.createElement("script")
     scriptElem.src = `./${moduleName}/wasm-module-${moduleName}.js`
@@ -97,7 +103,7 @@ if (moduleName) {
             const lengthOfName = view[index]
             div(partsElem, `    ${byteStr(view[index])}`, ` — length of name (${view[index]})`)
             index++
-            div(partsElem, `      ${Array.from(view.slice(index, index + lengthOfName + 1)).map(byteStr).join(" ")}`, ` — exported function "${Array.from(view.slice(index, index + lengthOfName)).map(c => String.fromCharCode(c)).join("")}" with index ${view[index + lengthOfName + 1]}`)
+            div(partsElem, `      ${Array.from(view.slice(index, index + lengthOfName + 1)).map(byteStr).join(" ")}`, ` — exported function "${Array.from(view.slice(index, index + lengthOfName)).map(c => String.fromCharCode(c)).join("")}" with index ${view[index + lengthOfName + 2]}`)
             index += lengthOfName + 2
         }
 
