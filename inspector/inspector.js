@@ -108,7 +108,32 @@ if (moduleName) {
             index += lengthOfName + 2
         }
 
-        div(partsElem, `${Array.from(view.slice(index)).map(byteStr).join(" ")}`)
+        div(partsElem, `${byteStr(view[index])}`, ` — ${view[index] === 10 ? "start of section with code" : "that's something new. Expected 0a"}`)
+        index++
+        div(partsElem, `  ${byteStr(view[index])}`, ` — number of bytes with code (${view[index]})`)
+        index++
+        
+        div(partsElem, `${Array.from(view.slice(index)).map(byteStr).join(" ")}`, "")
+        const codeStrings = Array.from(view.slice(index)).map(byteStr)
+        let state = "opcode"
+        codeStrings.forEach(byte => {
+            switch (state) {
+            case "opcode": 
+                switch (byte) {
+                case "03":
+                    div(partsElem, `${byte}`, ` — function call`)
+                    break
+                default:
+
+                }
+                break
+            case "data":
+
+                break
+            default:
+                console.error(`unknown state ${state}`)
+            }
+        })
 
         const wordWidth = 8
         const numberOfWords = 2
