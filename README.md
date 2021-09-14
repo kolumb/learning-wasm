@@ -29,14 +29,14 @@ Build only specific ones:
 ### Cheat-sheet
 | Opcode | token            | meaning
 |--------|------------------|--------------------------------------
-|        | ;;               | single-line comment
-|        | (; ;)            | multi-line comment
-|        | module           | collection of functions
+| --     | ;;               | single-line comment
+| --     | (; ;)            | multi-line comment
+| ??     | module           | collection of functions
 | 01     | type             | declaration for functions is optional
 | 03     | func             | declaration with named index
 | 07     | export           | func from stack
 | 60     | param            | indexed (name is optional)
-|        | result           | accepts a type
+| --     | result           | accepts a type
 | 40     |                  | pseudo type for block
 | 02     | block            | start block of code. May or my not return a value. (can accept a label?)
 | 03     | loop             | start block that can be used as a loop if you break from it. (can accept a label?)
@@ -54,11 +54,11 @@ Build only specific ones:
 | 4c     | i32.le_s         | less than or equal
 | a8     | i32.trunc_s/f32  | f32 -> i32 (i32.trunc_f32_s)
 | 7e     | i64              | 64 bit float type
-|        | i64.eqz          | equal to zero
+| ??     | i64.eqz          | equal to zero
 | 7d     | f32              | 32 bit float type
 | 91     | f32.sqrt         | sqrt
 | 7c     | f64              | 64 bit float type
-|        | f64.lt           | less than
+| ??     | f64.lt           | less than
 
 Notes:
 In function all variables are indexed. Arguments has 0, 1 ... And local variables have next indices e.g. 2, 3 etc.
