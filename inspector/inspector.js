@@ -104,9 +104,11 @@ if (moduleName) {
             const lengthOfName = view[index]
             div(partsElem, `    ${byteStr(view[index])}`, ` — length of name (${view[index]})`)
             index++
-            div(partsElem, `      ${Array.from(view.slice(index, index + lengthOfName + 1)).map(byteStr).join(" ")}`, ` — exported function "${Array.from(view.slice(index, index + lengthOfName)).map(c => String.fromCharCode(c)).join("")}" with index ${view[index + lengthOfName + 2]}`)
+            div(partsElem, `      ${Array.from(view.slice(index, index + lengthOfName + 2)).map(byteStr).join(" ")}`, ` — exported function "${Array.from(view.slice(index, index + lengthOfName)).map(c => String.fromCharCode(c)).join("")}" with index ${view[index + lengthOfName + 1]}`)
             index += lengthOfName + 2
         }
+
+        div(partsElem, `${Array.from(view.slice(index)).map(byteStr).join(" ")}`)
 
         const wordWidth = 8
         const numberOfWords = 2
