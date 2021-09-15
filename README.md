@@ -154,7 +154,7 @@ In function all variables are indexed. Arguments has 0, 1 ... And local variable
 |            |               | 4c 0d 01 20 01 20 02 22  01 6a 21 02 20 00 41 01
 |            |               | 6b 21 00 0c 00 0b 0b 20  02 0f 0b
 |            | 01 2a         | one block of code both with length of 42 bytes
-|            | 01            | ???
+|            | 01            | how many kinds of types needs to be allocated for local variables
 |            | 02 7f         | allocate two int
 |            | 41 01         | put 1 on a stack
 |            | 21 02         | set variable with index 2 to 1
@@ -205,7 +205,7 @@ In function all variables are indexed. Arguments has 0, 1 ... And local variable
 | 1          | 0c            | number of bytes with code
 | 12         | ->            | 01 0a 00 20 00 91 a8 41 01 6b 69 0b
 |            | 01 0a         | one block of code both with length of 10 bytes
-|            | 00            | ???
+|            | 00            | how many kinds of types needs to be allocated for local variables
 |            | 20 00         | get argument on stack
 |            | 91            | f32.sqrt
 |            | a8            | i32.trunc_f32_s
