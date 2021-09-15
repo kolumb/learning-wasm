@@ -140,12 +140,14 @@ if (moduleName) {
             allocnumb: "allocnumb",
             alloctype: "alloctype",
             data: "data",
+            skip: "skip",
         }
         let state = states.opcode
         let locals = 0
         let typeToParse = ""
         const blockStack = []
         let dataExplanation = ""
+        let stateAfterSkip = states.opcode
         codeStrings.forEach((byte, i) => {
             if (i === 2) {
                 if (byte === "00") {
@@ -163,53 +165,48 @@ if (moduleName) {
                     state = states.datalen
                     break
                 case "02":
-                    div(report, indent, `${byte}`, `start of "block" block`)
+                    div(report, indent, `${byte} ${codeStrings[i+1]}`, `start of "block" block`)
                     blockStack.push(blockTypes.block)
+                    indent++
+                    state = states.skip
                     break
                 case "03":
-                    div(report, indent, `${byte}`, `start of "loop" block`)
+                    div(report, indent, `${byte} ${codeStrings[i+1]}`, `start of "loop" block`)
                     blockStack.push(blockTypes.loop)
+                    indent++
+                    state = states.skip
                     break
                 case "0d":
-                    div(report, indent, `${byte}`, `br_if (break if comparison was successful)`)
-                    dataExplanation = blockStack[blockStack.length - 1] === "is an index of block in stack to continue" ? "" : "is an index of block in stack to break"
-                    typeToParse = "i32"
-                    state = states.data
+                    const argument = parseInt(codeStrings[i+1], 16)
+                    const continueOrBreak = blockStack[blockStack.length - argument- 1] === blockTypes.loop ? "continue loop" : "break"
+                    div(report, indent, `${byte} ${codeStrings[i+1]}`, `br_if (${continueOrBreak} block with index ${argument} from end if comparison was successful)`)
+                    state = states.skip
                     break
                 case "20":
-                    div(report, indent, `${byte}`, `local.get (push on stack value of local variable by index)`)
-                    typeToParse = "i32"
-                    state = states.data
+                    div(report, indent, `${byte} ${codeStrings[i+1]}`, `local.get (push on stack value of local variable by index ${parseInt(codeStrings[i+1], 16)})`)
+                    state = states.skip
                     break
                 case "21":
-                    div(report, indent, `${byte}`, `local.set (set value of local variable by index using a value on the stack)`)
-                    typeToParse = "i32"
-                    state = states.data
+                    div(report, indent, `${byte} ${codeStrings[i+1]}`, `local.set (pop value from stack to local variable by index ${parseInt(codeStrings[i+1], 16)})`)
+                    state = states.skip
                     break
                 case "22":
-                    div(report, indent, `${byte}`, `local.tee (set value from stack and put it back on stack (set without consuming))`)
-                    typeToParse = "i32"
-                    state = states.data
-                    dataExplanation = "is the index of the variable that will get value from stack"
-                    break
-                case "40":
-                    div(report, indent, `${byte}`, `block pseudo-type`)
-                    indent++
+                    div(report, indent, `${byte} ${codeStrings[i+1]}`, `local.tee (pop value from stack to variable with index ${parseInt(codeStrings[i+1], 16)} and put it back on stack)`)
+                    state = states.skip
                     break
                 case "41":
-                    div(report, indent, `${byte}`, `i32.const (push constant value on stack)`)
-                    typeToParse = "i32"
-                    state = states.data
+                    div(report, indent, `${byte} ${codeStrings[i+1]}`, `i32.const (push constant value ${parseInt(codeStrings[i+1], 16)} on stack)`)
+                    state = states.skip
                     break
                 case "4c":
-                    div(report, indent, `${byte}`, `i32.le_s (<=)`)
+                    div(report, indent, `${byte}`, `i32.le_s (pop two values from stack and compare them with <=)`)
                     break
                 default:
-
+                    div(report, indent, `${byte}`, `Unknown`)
                 }
                 break
             case states.datalen:
-                div(report, indent, `${byte}`, `size is ${parseInt(byte)} bytes`)
+                div(report, indent, `${byte}`, `its size is ${parseInt(byte)} bytes`)
                 indent++
                 state = states.opcode
                 break
@@ -220,9 +217,15 @@ if (moduleName) {
                 state = states.allocnumb
                 break
             case states.allocnumb:
-                div(report, indent, `${byte}`, `allocate ${parseInt(byte)} variables`)
-                state = states.alloctype
-                indent++
+                div(report, indent, `${byte} ${codeStrings[i+1]}`, `allocate ${parseInt(byte)} variables of type  ${byte2type[parseInt(codeStrings[i+1], 16)]}`)
+                locals--
+                if (locals === 0) {
+                    indent--
+                    stateAfterSkip = states.opcode
+                } else {
+                    stateAfterSkip = states.allocnumb
+                }
+                state = states.skip
                 break
             case states.alloctype:
                 div(report, indent, `${byte}`, `of type ${byte2type[parseInt(byte, 16)]}`)
@@ -245,6 +248,10 @@ if (moduleName) {
                 default: console.error(`Unknown type ${typeToParse}`)
                 }
                 state = states.opcode
+                break
+            case states.skip:
+                state = stateAfterSkip
+                stateAfterSkip = states.opcode
                 break
             default:
                 console.error(`unknown state ${state}`)
