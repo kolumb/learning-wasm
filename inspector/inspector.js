@@ -128,12 +128,28 @@ if (moduleName) {
         div(report, indent, `${byteStr(view[index])}`, `number of bytes with code (${view[index]})`)
         index++
         
-        indent = 0
         div(report, indent, `${Array.from(view.slice(index)).map(byteStr).join(" ")}`, "")
         const codeStrings = Array.from(view.slice(index)).map(byteStr)
-        const states = {opcode: "opcode", datalen: "datalen"}
+        const states = {
+            opcode: "opcode",
+            datalen: "datalen",
+            localalloc: "localalloc",
+            allocnumb: "allocnumb",
+            alloctype: "alloctype",
+            data: "data",
+        }
         let state = states.opcode
-        codeStrings.forEach(byte => {
+        let locals = 0
+        let typeToParse = 0x7f
+        codeStrings.forEach((byte, i) => {
+            if (i === 2) {
+                if (byte === "00") {
+                    div(report, indent, `${byte}`, `no additional local variables`)
+                    return
+                } else {
+                    state = states.localalloc
+                }
+            }
             switch (state) {
             case states.opcode:
                 switch (byte) {
@@ -144,6 +160,10 @@ if (moduleName) {
                 case "03":
                     div(report, indent, `${byte}`, `function call`)
                     break
+                case "41":
+                    div(report, indent, `${byte}`, `i32.const (declare constant value on stack)`)
+                    state = states.data
+                    break
                 default:
 
                 }
@@ -151,6 +171,32 @@ if (moduleName) {
             case states.datalen:
                 div(report, indent, `${byte}`, `length of data`)
                 indent++
+                state = states.opcode
+                break
+            case states.localalloc:
+                locals = parseInt(byte)
+                div(report, indent, `${byte}`, `${locals} variable types will be allocated`)
+                indent++
+                state = states.allocnumb
+                break
+            case states.allocnumb:
+                div(report, indent, `${byte}`, `${parseInt(byte)} variables will be allocated`)
+                state = states.alloctype
+                indent++
+                break
+            case states.alloctype:
+                div(report, indent, `${byte}`, `of type ${getType(parseInt(byte, 16))}`)
+                locals--
+                if (locals === 0) {
+                    state = states.opcode
+                    indent--
+                } else {
+                    state = states.allocnumb
+                }
+                indent--
+                break
+            case states.data:
+                div(report, indent, `${byte}`, `${parseInt(byte)}`)
                 state = states.opcode
                 break
             default:
