@@ -145,6 +145,7 @@ if (moduleName) {
         let locals = 0
         let typeToParse = ""
         const blockStack = []
+        let dataExplanationTemplate = ""
         codeStrings.forEach((byte, i) => {
             if (i === 2) {
                 if (byte === "00") {
@@ -169,9 +170,13 @@ if (moduleName) {
                     div(report, indent, `${byte}`, `start of "loop" block`)
                     blockStack.push(blockTypes.loop)
                     break
+                case "0d":
+                    div(report, indent, `${byte}`, `br_if (breack if comparison was successful)`)
+                    dataExplanationTemplate = blockStack[blockStack.length - 1] === "continue block VALUE in block stack" ? "" : "will break VALUE + 1 blocks"
+                    state = states.data
+                    break
                 case "21":
                     div(report, indent, `${byte}`, `set value of local variable by index using a value on the stack`)
-                    indent++
                     state = states.data
                     break
                 case "40":
@@ -181,8 +186,10 @@ if (moduleName) {
                 case "41":
                     div(report, indent, `${byte}`, `i32.const (push constant value on stack)`)
                     typeToParse = "i32"
-                    indent++
                     state = states.data
+                    break
+                case "4c":
+                    div(report, indent, `${byte}`, `i32.le_s (<=)`)
                     break
                 default:
 
@@ -218,11 +225,12 @@ if (moduleName) {
             case states.data:
                 switch (typeToParse) {
                 case "i32":
-                    div(report, indent, `${byte}`, `${parseInt(byte)}`)
+                    const value = parseInt(byte)
+                    div(report, indent + 1, `${byte}`, `${value} ${dataExplanationTemplate.replace("VALUE", value)}`)
+                    dataExplanationTemplate = ""
                     break
                 default: console.error(`Unknown type ${typeToParse}`)
                 }
-                indent--
                 state = states.opcode
                 break
             default:
