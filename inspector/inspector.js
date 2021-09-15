@@ -115,11 +115,17 @@ if (moduleName) {
         
         div(partsElem, `${Array.from(view.slice(index)).map(byteStr).join(" ")}`, "")
         const codeStrings = Array.from(view.slice(index)).map(byteStr)
-        let state = "opcode"
+        const states = {opcode: "opcode", datalen: "datalen"}
+        let state = states.opcode
+        let indentation = 0
         codeStrings.forEach(byte => {
             switch (state) {
-            case "opcode": 
+            case states.opcode:
                 switch (byte) {
+                case "01":
+                    div(partsElem, `${byte}`, ` — module start`)
+                    state = states.datalen
+                    break
                 case "03":
                     div(partsElem, `${byte}`, ` — function call`)
                     break
@@ -127,8 +133,10 @@ if (moduleName) {
 
                 }
                 break
-            case "data":
-
+            case states.datalen:
+                div(partsElem, `${byte}`, ` — length of data`)
+                indentation++
+                state = states.opcode
                 break
             default:
                 console.error(`unknown state ${state}`)
