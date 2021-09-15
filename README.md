@@ -43,7 +43,7 @@ Build only specific ones:
 | 0c     | br               | breack provided index of block (from end)
 | 0d     | br_if            | breack if comparison was successful by provided index of block (from end)
 | 0f     | return           | Is it optional?
-| 20     | local.get        | get value of local variable by index
+| 20     | local.get        | push on stack value of local variable by index
 | 21     | local.set        | set value of local variable by index using a value on the stack
 | 22     | local.tee        | set value from stack and put it back on stack (set without consuming)
 | 7f     | i32              | 32 bit integer type

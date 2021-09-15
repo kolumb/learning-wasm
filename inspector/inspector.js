@@ -173,10 +173,17 @@ if (moduleName) {
                 case "0d":
                     div(report, indent, `${byte}`, `br_if (breack if comparison was successful)`)
                     dataExplanationTemplate = blockStack[blockStack.length - 1] === "continue block VALUE in block stack" ? "" : "will break VALUE + 1 blocks"
+                    typeToParse = "i32"
+                    state = states.data
+                    break
+                case "20":
+                    div(report, indent, `${byte}`, `local.get (push on stack value of local variable by index)`)
+                    typeToParse = "i32"
                     state = states.data
                     break
                 case "21":
-                    div(report, indent, `${byte}`, `set value of local variable by index using a value on the stack`)
+                    div(report, indent, `${byte}`, `local.set (set value of local variable by index using a value on the stack)`)
+                    typeToParse = "i32"
                     state = states.data
                     break
                 case "40":
