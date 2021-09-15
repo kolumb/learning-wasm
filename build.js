@@ -30,7 +30,7 @@ moduleNames.map(moduleName => {
         let stdout = execSync(`wat2wasm -o ${modulePath} ${sourceFolder + moduleName}.wat`);
     } catch(err) {
         console.error(`Could not compile module "${sourceFolder + moduleName}.wat". Make sure that you have "wat2wasm" tool in your path.`)
-        process.exit(1);
+        process.exit(err.status);
     }
 
     if (!fs.existsSync(folderName + "/index.html")) {
