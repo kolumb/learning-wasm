@@ -20,6 +20,10 @@ function div(parent, indentation, code, text) {
 }
 
 function byteStr(byte) {
+    if (null == byte) {
+        console.error("Segmentation fault")
+        return
+    }
     return byte.toString(16).padStart(2, "0")
 }
 
