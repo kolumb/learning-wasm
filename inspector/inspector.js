@@ -3,7 +3,7 @@
 const listOfModulesElem = document.querySelector("#ListOfModulesElem")
 const displayElem = document.querySelector("#DisplayElem")
 const canvasElem = document.querySelector("#CanvasElem")
-const partsElem = document.querySelector("#PartsElem")
+const report = document.querySelector("#ReportElem")
 
 function div(parent, indentation, code, text) {
     const indentationSize = 2
@@ -64,58 +64,58 @@ if (moduleName) {
         let index = 8
         const signatureAndVersion = Array.from(view.slice(0, index)).map(byteStr).join(" ")
         if (signatureAndVersion === "00 61 73 6d 01 00 00 00") {
-            div(partsElem, 0, "00 61 73 6d   01 00 00 00", "asm version 1")
+            div(report, 0, "00 61 73 6d   01 00 00 00", "asm version 1")
         } else {
-            partsElem.textContent = "Unknown file format"
+            report.textContent = "Unknown file format"
             return;
         }
-        div(partsElem, 0, `${byteStr(view[index])}`, `${view[index] === 1 ? "start of section with types" : "that's something new.. Expected 01"}`)
+        div(report, 0, `${byteStr(view[index])}`, `${view[index] === 1 ? "start of section with types" : "that's something new.. Expected 01"}`)
         index++
-        div(partsElem, 1, `${byteStr(view[index])}`, `number of bytes with types (${view[index]})`)
+        div(report, 1, `${byteStr(view[index])}`, `number of bytes with types (${view[index]})`)
         index++
         const numberOfTypes = view[index]
-        div(partsElem, 1, `${byteStr(view[index])}`, `number of types (${view[index]})`)
+        div(report, 1, `${byteStr(view[index])}`, `number of types (${view[index]})`)
         index++
         for (let i = 0; i < numberOfTypes; i++) {
-            div(partsElem, 2, `${byteStr(view[index])}`, `${view[index] === 0x60 ? "function type" : "what is this? I know only 60"}`)
+            div(report, 2, `${byteStr(view[index])}`, `${view[index] === 0x60 ? "function type" : "what is this? I know only 60"}`)
             index++
             const arity = view[index]
-            div(partsElem, 3, `${Array.from(view.slice(index, index + arity + 1)).map(byteStr).join(" ")}`, `${arity} arguments of type ${Array.from(view.slice(index + 1, index + arity + 1)).map(getType).join(", ")}`)
+            div(report, 3, `${Array.from(view.slice(index, index + arity + 1)).map(byteStr).join(" ")}`, `${arity} arguments of type ${Array.from(view.slice(index + 1, index + arity + 1)).map(getType).join(", ")}`)
             index += arity + 1
             const outputs = view[index]
-            div(partsElem, 3, `${Array.from(view.slice(index, index + outputs + 1)).map(byteStr).join(" ")}`, `${outputs} output of type ${Array.from(view.slice(index + 1, index + outputs + 1)).map(getType).join(", ")}`)
+            div(report, 3, `${Array.from(view.slice(index, index + outputs + 1)).map(byteStr).join(" ")}`, `${outputs} output of type ${Array.from(view.slice(index + 1, index + outputs + 1)).map(getType).join(", ")}`)
             index += outputs + 1
         }
 
-        div(partsElem, 0, `${byteStr(view[index])}`, `${view[index] === 3 ? "start of section with function declarations" : "that's something new. Expected 03"}`)
+        div(report, 0, `${byteStr(view[index])}`, `${view[index] === 3 ? "start of section with function declarations" : "that's something new. Expected 03"}`)
         index++
-        div(partsElem, 1, `${byteStr(view[index])}`, `number of bytes with function declarations (${view[index]})`)
+        div(report, 1, `${byteStr(view[index])}`, `number of bytes with function declarations (${view[index]})`)
         index++
         const numberOfFunctions = view[index]
-        div(partsElem, 1, `${Array.from(view.slice(index, index + numberOfFunctions + 1)).map(byteStr).join(" ")}`, `${numberOfFunctions} functions with types ${Array.from(view.slice(index + 1, index + numberOfFunctions + 1)).join(", ")}`)
+        div(report, 1, `${Array.from(view.slice(index, index + numberOfFunctions + 1)).map(byteStr).join(" ")}`, `${numberOfFunctions} functions with types ${Array.from(view.slice(index + 1, index + numberOfFunctions + 1)).join(", ")}`)
         index += numberOfFunctions + 1
 
-        div(partsElem, 0, `${byteStr(view[index])}`, `${view[index] === 7 ? "start of section with exports" : "that's something new. Expected 07"}`)
+        div(report, 0, `${byteStr(view[index])}`, `${view[index] === 7 ? "start of section with exports" : "that's something new. Expected 07"}`)
         index++
-        div(partsElem, 1, `${byteStr(view[index])}`, `number of bytes with exports (${view[index]})`)
+        div(report, 1, `${byteStr(view[index])}`, `number of bytes with exports (${view[index]})`)
         index++
         const numberOfExports = view[index]
-        div(partsElem, 1, `${byteStr(view[index])}`, `number of exports (${view[index]})`)
+        div(report, 1, `${byteStr(view[index])}`, `number of exports (${view[index]})`)
         index++
         for (let i = 0; i < numberOfExports; i++) {
             const lengthOfName = view[index]
-            div(partsElem, 2, `${byteStr(view[index])}`, `length of name (${view[index]})`)
+            div(report, 2, `${byteStr(view[index])}`, `length of name (${view[index]})`)
             index++
-            div(partsElem, 3, `${Array.from(view.slice(index, index + lengthOfName + 2)).map(byteStr).join(" ")}`, `exported function "${Array.from(view.slice(index, index + lengthOfName)).map(c => String.fromCharCode(c)).join("")}" with index ${view[index + lengthOfName + 1]}`)
+            div(report, 3, `${Array.from(view.slice(index, index + lengthOfName + 2)).map(byteStr).join(" ")}`, `exported function "${Array.from(view.slice(index, index + lengthOfName)).map(c => String.fromCharCode(c)).join("")}" with index ${view[index + lengthOfName + 1]}`)
             index += lengthOfName + 2
         }
 
-        div(partsElem, 0, `${byteStr(view[index])}`, `${view[index] === 10 ? "start of section with code" : "that's something new. Expected 0a"}`)
+        div(report, 0, `${byteStr(view[index])}`, `${view[index] === 10 ? "start of section with code" : "that's something new. Expected 0a"}`)
         index++
-        div(partsElem, 1, `${byteStr(view[index])}`, `number of bytes with code (${view[index]})`)
+        div(report, 1, `${byteStr(view[index])}`, `number of bytes with code (${view[index]})`)
         index++
         
-        div(partsElem, 0, `${Array.from(view.slice(index)).map(byteStr).join(" ")}`, "")
+        div(report, 0, `${Array.from(view.slice(index)).map(byteStr).join(" ")}`, "")
         const codeStrings = Array.from(view.slice(index)).map(byteStr)
         const states = {opcode: "opcode", datalen: "datalen"}
         let state = states.opcode
@@ -125,18 +125,18 @@ if (moduleName) {
             case states.opcode:
                 switch (byte) {
                 case "01":
-                    div(partsElem, indentation, `${byte}`, `module start`)
+                    div(report, indentation, `${byte}`, `module start`)
                     state = states.datalen
                     break
                 case "03":
-                    div(partsElem, indentation, `${byte}`, `function call`)
+                    div(report, indentation, `${byte}`, `function call`)
                     break
                 default:
 
                 }
                 break
             case states.datalen:
-                div(partsElem, indentation, `${byte}`, `length of data`)
+                div(report, indentation, `${byte}`, `length of data`)
                 indentation++
                 state = states.opcode
                 break
