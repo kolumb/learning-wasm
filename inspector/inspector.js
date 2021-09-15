@@ -29,14 +29,11 @@ function printByte(byte) {
     displayElem.appendChild(span)
 }
 
-function getType(byte) {
-    switch (byte) {
-        case 0x7f: return "i32"
-        case 0x7e: return "i64"
-        case 0x7d: return "f32"
-        case 0x7c: return "f64"
-        default: return "unknown"
-    }
+const byte2type = {
+    0x7f: "i32",
+    0x7e: "i64",
+    0x7d: "f32",
+    0x7c: "f64",
 }
 
 let moduleName = new URLSearchParams(location.search).get("module")
@@ -84,10 +81,10 @@ if (moduleName) {
             index++
             indent++
             const arity = view[index]
-            div(report, indent, `${Array.from(view.slice(index, index + arity + 1)).map(byteStr).join(" ")}`, `${arity} arguments of type ${Array.from(view.slice(index + 1, index + arity + 1)).map(getType).join(", ")}`)
+            div(report, indent, `${Array.from(view.slice(index, index + arity + 1)).map(byteStr).join(" ")}`, `${arity} arguments of type ${Array.from(view.slice(index + 1, index + arity + 1)).map(byte => byte2type[byte]).join(", ")}`)
             index += arity + 1
             const outputs = view[index]
-            div(report, indent, `${Array.from(view.slice(index, index + outputs + 1)).map(byteStr).join(" ")}`, `${outputs} output of type ${Array.from(view.slice(index + 1, index + outputs + 1)).map(getType).join(", ")}`)
+            div(report, indent, `${Array.from(view.slice(index, index + outputs + 1)).map(byteStr).join(" ")}`, `${outputs} output of type ${Array.from(view.slice(index + 1, index + outputs + 1)).map(byte => byte2type[byte]).join(", ")}`)
             index += outputs + 1
             indent--
         }
@@ -140,7 +137,7 @@ if (moduleName) {
         }
         let state = states.opcode
         let locals = 0
-        let typeToParse = 0x7f
+        let typeToParse = ""
         codeStrings.forEach((byte, i) => {
             if (i === 2) {
                 if (byte === "00") {
@@ -162,6 +159,8 @@ if (moduleName) {
                     break
                 case "41":
                     div(report, indent, `${byte}`, `i32.const (declare constant value on stack)`)
+                    typeToParse = "i32"
+                    indent++
                     state = states.data
                     break
                 default:
@@ -169,23 +168,23 @@ if (moduleName) {
                 }
                 break
             case states.datalen:
-                div(report, indent, `${byte}`, `length of data`)
+                div(report, indent, `${byte}`, `size is ${parseInt(byte)} bytes`)
                 indent++
                 state = states.opcode
                 break
             case states.localalloc:
                 locals = parseInt(byte)
-                div(report, indent, `${byte}`, `${locals} variable types will be allocated`)
+                div(report, indent, `${byte}`, `${locals} type kinds will be allocated`)
                 indent++
                 state = states.allocnumb
                 break
             case states.allocnumb:
-                div(report, indent, `${byte}`, `${parseInt(byte)} variables will be allocated`)
+                div(report, indent, `${byte}`, `allocate ${parseInt(byte)} variables`)
                 state = states.alloctype
                 indent++
                 break
             case states.alloctype:
-                div(report, indent, `${byte}`, `of type ${getType(parseInt(byte, 16))}`)
+                div(report, indent, `${byte}`, `of type ${byte2type[parseInt(byte, 16)]}`)
                 locals--
                 if (locals === 0) {
                     state = states.opcode
@@ -196,7 +195,13 @@ if (moduleName) {
                 indent--
                 break
             case states.data:
-                div(report, indent, `${byte}`, `${parseInt(byte)}`)
+                switch (typeToParse) {
+                case "i32":
+                    div(report, indent, `${byte}`, `${parseInt(byte)}`)
+                    break
+                default: console.error(`Unknown type ${typeToParse}`)
+                }
+                indent--
                 state = states.opcode
                 break
             default:
