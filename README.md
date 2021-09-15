@@ -49,6 +49,7 @@ Build only specific ones:
 | 7f     | i32              | 32 bit integer type
 | 41     | i32.const        | push constant value on stack
 | 6a     | i32.add          | i32 i32 -> i32
+| 6a     | i32.sub          | i32 i32 -> i32
 | 69     | i32.popcnt       | count bites = 1
 | 4c     | i32.le_s         | less than or equal
 | a8     | i32.trunc_s/f32  | f32 -> i32 (i32.trunc_f32_s)

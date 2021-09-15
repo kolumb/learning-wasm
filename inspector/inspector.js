@@ -131,7 +131,6 @@ if (moduleName) {
         div(report, indent, `${byteStr(view[index])}`, `number of bytes with code (${view[index]})`)
         index++
         
-        div(report, indent, `${Array.from(view.slice(index)).map(byteStr).join(" ")}`, "")
         const codeStrings = Array.from(view.slice(index)).map(byteStr)
         const states = {
             opcode: "opcode",
@@ -176,11 +175,24 @@ if (moduleName) {
                     indent++
                     state = states.skip
                     break
-                case "0d":
+                case "0b":
+                    indent--
+                    div(report, indent, `${byte}`, `end (close block)`)
+                    break
+                case "0c": {
+                    const argument = parseInt(codeStrings[i+1], 16)
+                    const continueOrBreak = blockStack[blockStack.length - argument- 1] === blockTypes.loop ? "continue loop" : "break"
+                    div(report, indent, `${byte} ${codeStrings[i+1]}`, `br (${continueOrBreak} block with index ${argument} from end)`)
+                    state = states.skip
+                    } break
+                case "0d": {
                     const argument = parseInt(codeStrings[i+1], 16)
                     const continueOrBreak = blockStack[blockStack.length - argument- 1] === blockTypes.loop ? "continue loop" : "break"
                     div(report, indent, `${byte} ${codeStrings[i+1]}`, `br_if (${continueOrBreak} block with index ${argument} from end if comparison was successful)`)
                     state = states.skip
+                    } break
+                case "0f":
+                    div(report, indent, `${byte}`, `return (pop value from stack and return it to caller)`)
                     break
                 case "20":
                     div(report, indent, `${byte} ${codeStrings[i+1]}`, `local.get (push on stack value of local variable by index ${parseInt(codeStrings[i+1], 16)})`)
@@ -200,6 +212,12 @@ if (moduleName) {
                     break
                 case "4c":
                     div(report, indent, `${byte}`, `i32.le_s (pop two values from stack and compare them with <=)`)
+                    break
+                case "6a":
+                    div(report, indent, `${byte}`, `i32.add (pop two values from stack and add them)`)
+                    break
+                case "6b":
+                    div(report, indent, `${byte}`, `i32.sub (pop two values from stack and subtract them)`)
                     break
                 default:
                     div(report, indent, `${byte}`, `Unknown`)
