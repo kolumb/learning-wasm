@@ -36,6 +36,8 @@ const byte2type = {
     0x7c: "f64",
 }
 
+const blockTypes = { block: "block", loop: "loop", if: "if"}
+
 let moduleName = new URLSearchParams(location.search).get("module")
 if (!moduleName && moduleNames && moduleNames[0]) {
     moduleName = moduleNames[0]
@@ -138,6 +140,7 @@ if (moduleName) {
         let state = states.opcode
         let locals = 0
         let typeToParse = ""
+        const blockStack = []
         codeStrings.forEach((byte, i) => {
             if (i === 2) {
                 if (byte === "00") {
@@ -154,13 +157,22 @@ if (moduleName) {
                     div(report, indent, `${byte}`, `module start`)
                     state = states.datalen
                     break
+                case "02":
+                    div(report, indent, `${byte}`, `start of "block" block`)
+                    blockStack.push(blockTypes.block)
+                    break
                 case "03":
-                    div(report, indent, `${byte}`, `function call`)
+                    div(report, indent, `${byte}`, `start of "loop" block`)
+                    blockStack.push(blockTypes.loop)
                     break
                 case "21":
                     div(report, indent, `${byte}`, `set value of local variable by index using a value on the stack`)
                     indent++
                     state = states.data
+                    break
+                case "40":
+                    div(report, indent, `${byte}`, `block pseudo-type`)
+                    indent++
                     break
                 case "41":
                     div(report, indent, `${byte}`, `i32.const (push constant value on stack)`)
