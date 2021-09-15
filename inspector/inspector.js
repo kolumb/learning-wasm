@@ -157,8 +157,13 @@ if (moduleName) {
                 case "03":
                     div(report, indent, `${byte}`, `function call`)
                     break
+                case "21":
+                    div(report, indent, `${byte}`, `set value of local variable by index using a value on the stack`)
+                    indent++
+                    state = states.data
+                    break
                 case "41":
-                    div(report, indent, `${byte}`, `i32.const (declare constant value on stack)`)
+                    div(report, indent, `${byte}`, `i32.const (push constant value on stack)`)
                     typeToParse = "i32"
                     indent++
                     state = states.data

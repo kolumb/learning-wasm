@@ -47,7 +47,7 @@ Build only specific ones:
 | 21     | local.set        | set value of local variable by index using a value on the stack
 | 22     | local.tee        | set value from stack and put it back on stack (set without consuming)
 | 7f     | i32              | 32 bit integer type
-| 41     | i32.const        | declare constant value on stack
+| 41     | i32.const        | push constant value on stack
 | 6a     | i32.add          | i32 i32 -> i32
 | 69     | i32.popcnt       | count bites = 1
 | 4c     | i32.le_s         | less than or equal
