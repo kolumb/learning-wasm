@@ -145,7 +145,7 @@ if (moduleName) {
         let locals = 0
         let typeToParse = ""
         const blockStack = []
-        let dataExplanationTemplate = ""
+        let dataExplanation = ""
         codeStrings.forEach((byte, i) => {
             if (i === 2) {
                 if (byte === "00") {
@@ -171,8 +171,8 @@ if (moduleName) {
                     blockStack.push(blockTypes.loop)
                     break
                 case "0d":
-                    div(report, indent, `${byte}`, `br_if (breack if comparison was successful)`)
-                    dataExplanationTemplate = blockStack[blockStack.length - 1] === "continue block VALUE in block stack" ? "" : "will break VALUE + 1 blocks"
+                    div(report, indent, `${byte}`, `br_if (break if comparison was successful)`)
+                    dataExplanation = blockStack[blockStack.length - 1] === "is an index of block in stack to continue" ? "" : "is an index of block in stack to break"
                     typeToParse = "i32"
                     state = states.data
                     break
@@ -185,6 +185,12 @@ if (moduleName) {
                     div(report, indent, `${byte}`, `local.set (set value of local variable by index using a value on the stack)`)
                     typeToParse = "i32"
                     state = states.data
+                    break
+                case "22":
+                    div(report, indent, `${byte}`, `local.tee (set value from stack and put it back on stack (set without consuming))`)
+                    typeToParse = "i32"
+                    state = states.data
+                    dataExplanation = "is the index of the variable that will get value from stack"
                     break
                 case "40":
                     div(report, indent, `${byte}`, `block pseudo-type`)
@@ -233,8 +239,8 @@ if (moduleName) {
                 switch (typeToParse) {
                 case "i32":
                     const value = parseInt(byte)
-                    div(report, indent + 1, `${byte}`, `${value} ${dataExplanationTemplate.replace("VALUE", value)}`)
-                    dataExplanationTemplate = ""
+                    div(report, indent + 1, `${byte}`, `${value} ${dataExplanation}`)
+                    dataExplanation = ""
                     break
                 default: console.error(`Unknown type ${typeToParse}`)
                 }
