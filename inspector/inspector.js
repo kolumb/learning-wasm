@@ -135,6 +135,7 @@ function reportModule(e) {
         exportNumb: "exportNumb",
         exportNameLen: "exportNameLen",
         exportName: "exportName",
+        exportKind: "exportKind",
 
         codeSection: "codeSection",
         blockNumb: "blockNumb",
@@ -267,33 +268,39 @@ function reportModule(e) {
             indent++
             break
         case states.exportNumb:
-            div(report, indent, byteStr, `number of exported functions (${byte}) with indices:`)
+            div(report, indent, byteStr, `number of exports (${byte})`)
             numberOfExports = byte
             state = states.exportNameLen
             indent++
             break
         case states.exportNameLen:
-            div(report, indent, byteStr, `number of bytes that contain exported function name (${byte}):`)
+            div(report, indent, byteStr, `number of bytes that contain exported name (${byte})`)
             nameLen = byte
             state = states.exportName
             indent++
             break
         case states.exportName: {
-            const bytesOfName = Array.from(moduleView.slice(i, i + nameLen + 1))
+            const bytesOfName = Array.from(moduleView.slice(i, i + nameLen))
             let nameBytes = bytesOfName.map(byte2str).join(" ")
-            let name = bytesOfName.map(byte => String.fromCharCode(byte)).join("").replace("\0", "\\0")
-            const index = moduleView[i + nameLen + 1]
-            div(report, indent, `${nameBytes}, ${byte2str(index)}`, `"${name}" with index ${index}`)
-            i += nameLen + 1
+            let name = bytesOfName.map(byte => String.fromCharCode(byte)).join("")
+            div(report, indent, nameBytes, `"${name}" of kind:`)
+            i += nameLen - 1
+            state = states.exportKind
+            indent++
+            } break
+        case states.exportKind:
+            console.assert(byte === 0, "Unknown export type. Currently supported only '00'")
+            div(report, indent, `${byteStr} ${nextByteStr}`, `function with index '${nextByte}'`)
+            state = states.skip
             numberOfExports--
             if (numberOfExports === 0) {
-                state = states.codeSection
-                indent -= 2
+                stateAfterSkip = states.codeSection
+                indent -= 4
             } else {
-                state = states.exportNameLen
+                stateAfterSkip = states.exportNameLen
+                indent -= 2
             }
-            indent--
-            } break
+            break
 
 // Section with Code
         case states.codeSection:
