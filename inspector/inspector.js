@@ -140,10 +140,6 @@ function reportModule(e) {
         localKindNumb: "localKindNumb",
         localTypeNumb: "localTypeNumb",
         localType: "localType",
-
-
-        allocNumb: "allocNumb",
-        allocType: "allocType",
         opCode: "opCode",
 
         data: "data",
