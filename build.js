@@ -2,16 +2,19 @@ const fs = require("fs");
 const { execSync } = require('child_process');
 
 const moduleNames = []
+let modulesToBuild = []
 const sourceFolder = "./src/"
 const sources = fs.readdirSync(sourceFolder).filter(file => file.endsWith(".wat"));
+Array.prototype.push.apply(moduleNames, sources.map(source => source.slice(0, -4)));
 if(process.argv.length < 3) {
-    Array.prototype.push.apply(moduleNames, sources.map(source => source.slice(0, -4)));
+    modulesToBuild = moduleNames
     console.log('Building all modules: ' + moduleNames.join(", ") + ".");
 } else {
-    Array.prototype.push.apply(moduleNames, process.argv.slice(2));
+    Array.prototype.push.apply(modulesToBuild, process.argv.slice(2));
+    console.log('Building modules: ' + modulesToBuild.join(", ") + ".");
 }
 
-moduleNames.map(moduleName => {
+modulesToBuild.map(moduleName => {
     const folderName = "./" + moduleName;
     if (!fs.existsSync(sourceFolder + moduleName + ".wat")) {
         if(sources.length > 0) {

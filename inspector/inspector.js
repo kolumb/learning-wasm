@@ -346,12 +346,6 @@ function reportModule(e) {
             break
         case states.opCode:
             switch (byte) {
-            case 0x01:
-                div(report, indent, byteStr, `module start`)
-                dataExplanation = `bytes of data with module`
-                state = states.data
-                indent++
-                break
             case 0x02:
                 div(report, indent, `${byte} ${nextByteStr}`, `start of "block" block`)
                 blockStack.push(blockTypes.block)
@@ -400,7 +394,7 @@ function reportModule(e) {
                 state = states.skip
                 break
             case 0x41:
-                div(report, indent, `${byteStr} ${nextByteStr}`, `i32.const (push constant value ${byte} on stack)`)
+                div(report, indent, `${byteStr} ${nextByteStr}`, `i32.const (push constant value ${nextByte} on stack)`)
                 state = states.skip
                 break
             case 0x4c:
