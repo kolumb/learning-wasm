@@ -30,7 +30,7 @@ Build only specific ones:
 |--------|------------------|--------------------------------------
 | --     | ;;               | single-line comment
 | --     | (; ;)            | multi-line comment
-| ??     | module           | collection of functions
+| 0a     | module           | collection of functions
 | 01     | type             | declaration for functions is optional
 | 03     | func             | declaration with named index
 | 07     | export           | func from stack
