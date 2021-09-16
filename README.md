@@ -28,14 +28,14 @@ Build only specific ones:
 ### Cheat-sheet
 | Opcode | token            | meaning
 |--------|------------------|--------------------------------------
-| --     | ;;               | single-line comment
-| --     | (; ;)            | multi-line comment
+| __     | ;;               | single-line comment
+| __     | (; ;)            | multi-line comment
 | 0a     | module           | collection of functions
 | 01     | type             | declaration for functions is optional
 | 03     | func             | declaration with named index
 | 07     | export           | func from stack
 | 60     | param            | indexed (name is optional)
-| --     | result           | accepts a type
+| __     | result           | accepts a type
 | 40     |                  | pseudo type for block
 | 02     | block            | start block of code. May or my not return a value. (can accept a label?)
 | 03     | loop             | start block that can be used as a loop if you break from it. (can accept a label?)
