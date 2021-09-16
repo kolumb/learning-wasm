@@ -36,10 +36,10 @@ modulesToBuild.map(moduleName => {
         process.exit(err.status);
     }
 
-    if (!fs.existsSync(folderName + "/index.html")) {
+    // if (!fs.existsSync(folderName + "/index.html")) {
         const htmlCode = fs.readFileSync("./template/index-template.html").toString().replace(/MODULE_NAME/g, moduleName);
         fs.writeFileSync(folderName + "/index.html", htmlCode);
-    }
+    // }
     if (!fs.existsSync(folderName + "/script.js")) {
         const jsCode = fs.readFileSync("./template/script-template.js").toString().replace(/MODULE_NAME/g, moduleName);
         fs.writeFileSync(folderName + "/script.js", jsCode);
