@@ -1,5 +1,6 @@
 "use strict"
 
+const sourceCodeLink = document.querySelector("#SourceCodeLink")
 const listOfModulesElem = document.querySelector("#ListOfModulesElem")
 const displayElem = document.querySelector("#DisplayElem")
 const canvasElem = document.querySelector("#CanvasElem")
@@ -51,6 +52,7 @@ moduleNames && moduleNames.forEach(name => {
     const link = document.createElement("a")
     if (name === moduleName) {
         link.classList.add("current-module")
+        sourceCodeLink.href = `https://github.com/kolumb/learning-wasm/blob/main/src/${name}.wat`
     }
     const fixLocalLinks = location.protocol === "file:" ? "index.html" : ""
     link.href = `./${fixLocalLinks}?module=${name}`
