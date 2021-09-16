@@ -406,11 +406,20 @@ function reportModule(e) {
             case 0x4c:
                 div(report, indent, byteStr, `i32.le_s (pop two values from stack and compare them with <=)`)
                 break
+            case 0x69:
+                div(report, indent, byteStr, `i32.popcnt (count bites that == 1)`)
+                break
             case 0x6a:
                 div(report, indent, byteStr, `i32.add (pop two values from stack, add them and push result on stack)`)
                 break
             case 0x6b:
                 div(report, indent, byteStr, `i32.sub (pop two values from stack, subtract them and push result on stack)`)
+                break
+            case 0x91:
+                div(report, indent, byteStr, `f32.sqrt (pop value from stack caclulate square root of it and push result on stack)`)
+                break
+            case 0xa8:
+                div(report, indent, byteStr, `i32.trunc_s/f32 (convert f32 to i32)`)
                 break
             default:
                 div(report, indent, byteStr, `< < < Unknown > > >`)
