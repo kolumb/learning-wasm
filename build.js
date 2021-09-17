@@ -48,7 +48,8 @@ modulesToBuild.map(moduleName => {
     const jsModuleSourcePath = `${folderName}/wasm-module-${moduleName}.js`;
     const wasmModule = fs.readFileSync(modulePath).toString("base64");
     const jsModuleInstantiationCode = `"use strict";
-const moduleBuffer = Uint8Array.from(atob("${wasmModule}"), c => c.charCodeAt(0));`
+const moduleBuffer = Uint8Array.from(atob("${wasmModule}"), c => c.charCodeAt(0));
+`
     fs.writeFileSync(jsModuleSourcePath, jsModuleInstantiationCode);
 });
 
