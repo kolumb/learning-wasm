@@ -131,6 +131,11 @@ function reportModule(e) {
         funcNumb: "funcNumb",
         funcTypeIndex: "funcTypeIndex",
 
+        memorySection: "memorySection",
+        memNumb: "memNumb",
+        memFlags: "memFlags",
+        memInitAndMax: "memInitAndMax",
+
         exportSection: "exportSection",
         exportNumb: "exportNumb",
         exportNameLen: "exportNameLen",
@@ -158,6 +163,8 @@ function reportModule(e) {
     let numberOfArgs
     let numberOfRets
     let numberOfFuncs
+    let numberOfMems
+    let indexOfMemoryDecl
     let numberOfExports
     let nameLen
     let numberOfBlocks
@@ -265,8 +272,45 @@ function reportModule(e) {
             div(report, indent, byteStr, `index of type that function has (${byte})`)
             numberOfFuncs--
             if (numberOfFuncs === 0) {
-                state = states.exportSection
+                if (nextByte === 0x05) {
+                    state = states.memorySection
+                } else {
+                    state = states.exportSection
+                }
                 indent -= 2
+            }
+            break
+// Section with Memory
+        case states.memorySection:
+            if (byte !== 0x05) { div(report, indent, byteStr, `Expected '05' as marker for section with memory declaration`); return}
+            div(report, indent, byteStr, "start of section with memory")
+            dataExplanation = `bytes of data with memory declaration`
+            stateAfterData = states.memNumb
+            state = states.data
+            indent++
+            break
+        case states.memNumb:
+            div(report, indent, byteStr, `number of memories (${byte})`)
+            numberOfMems = byte
+            indexOfMemoryDecl = 0
+            state = states.memFlags
+            indent++
+            break
+        case states.memFlags:
+            div(report, indent, byteStr, `flags for memory with index '${indexOfMemoryDecl}'`)
+            state = states.memInitAndMax
+            indent++
+            break
+        case states.memInitAndMax:
+            div(report, indent, `${byteStr} ${nextByteStr}`, `initial (${byte}) and maximum (${nextByte}) number of memory pages (64KiB each)`)
+            indexOfMemoryDecl++
+            state = states.skip
+            if (numberOfMems === indexOfMemoryDecl) {
+                stateAfterSkip = states.exportSection
+                indent -= 3
+            } else {
+                stateAfterSkip = states.memFlags
+                indent -= 1
             }
             break
 // Section with Exports
@@ -300,8 +344,8 @@ function reportModule(e) {
             indent++
             } break
         case states.exportKind:
-            console.assert(byte === 0, "Unknown export type. Currently supported only '00'")
-            div(report, indent, `${byteStr} ${nextByteStr}`, `function with index '${nextByte}'`)
+            console.assert(byte === 0 || byte === 2, "Unknown export type. Currently supported only '00' and '02'")
+            div(report, indent, `${byteStr} ${nextByteStr}`, `${byte === 0 ? "function" : "memory"} with index '${nextByte}'`)
             state = states.skip
             numberOfExports--
             if (numberOfExports === 0) {

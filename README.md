@@ -33,7 +33,7 @@ Build only specific ones:
 | 0a     | module           | collection of functions
 | 01     | type             | declaration for functions is optional
 | 03     | func             | declaration with named index
-| __     | memory           | declaration for memory index
+| 05     | memory           | declaration for memory index
 | 07     | export           | func from stack
 | 60     | param            | indexed (name is optional)
 | __     | result           | accepts a type
