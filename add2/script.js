@@ -9,7 +9,7 @@ function initWASMModule(instantiatedWASMModule) {
     document.querySelector('body').appendChild(display);
 }
 WebAssembly.instantiate(moduleBuffer).then(resultObject => {
-    if(initWASMModule) initWASMModule(resultObject);
+    if(resultObject) initWASMModule(resultObject);
 }).catch(function(err){
     console.log("You might need to build \"add2\" first");
     console.log(err)
