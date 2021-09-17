@@ -33,6 +33,7 @@ Build only specific ones:
 | 0a     | module           | collection of functions
 | 01     | type             | declaration for functions is optional
 | 03     | func             | declaration with named index
+| __     | memory           | declaration for memory index
 | 07     | export           | func from stack
 | 60     | param            | indexed (name is optional)
 | __     | result           | accepts a type
@@ -46,12 +47,15 @@ Build only specific ones:
 | 20     | local.get        | push on stack value of local variable by index
 | 21     | local.set        | set value of local variable by index using a value on the stack
 | 22     | local.tee        | set value from stack and put it back on stack (set without consuming)
+| 28     | load             | pop from stack index of memory and put on stack a value that's stored there
+| 36     | i32.store        | pop from stack index of memory and a value that will be stored there
 | 7f     | i32              | 32 bit integer type
 | 41     | i32.const        | push constant value on stack
 | 6a     | i32.add          | i32 i32 -> i32
 | 6a     | i32.sub          | i32 i32 -> i32
 | 69     | i32.popcnt       | count bites = 1
 | 4c     | i32.le_s         | less than or equal
+| 4e     | i32.ge_s         | greater than or equal
 | a8     | i32.trunc_s/f32  | f32 -> i32 (i32.trunc_f32_s)
 | 7e     | i64              | 64 bit float type
 | ??     | i64.eqz          | equal to zero
