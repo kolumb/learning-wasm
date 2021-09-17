@@ -216,10 +216,21 @@ function reportModule(e) {
             }
             break
         case states.funcRetNumb:
-            div(report, indent, byteStr, `function returns ${byte} values with following types:`)
-            numberOfRets = byte
-            state = states.funcRetType
-            indent++
+            div(report, indent, byteStr, byte > 0 ? `function returns ${byte} values with following types:`: `function returns nothing`)
+            if (byte > 0) {
+                numberOfRets = byte
+                state = states.funcRetType
+                indent++
+            } else {
+                numberOfTypes--
+                if (numberOfTypes === 0) {
+                    state = states.funcSection
+                    indent -= 3
+                } else {
+                    state = states.type
+                    indent -= 1
+                }
+            }
             break
         case states.funcRetType:
             div(report, indent, byteStr, byte2type[byte])
