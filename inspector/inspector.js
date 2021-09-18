@@ -6,6 +6,25 @@ const displayElem = document.querySelector("#DisplayElem")
 const canvasElem = document.querySelector("#CanvasElem")
 const report = document.querySelector("#ReportElem")
 
+let bitmapWidth
+let numberOfWords
+
+function initSizes() {
+    if (document.body.clientWidth < 1000) {
+        numberOfWords = 1
+    } else {
+        numberOfWords = 2
+    }
+    bitmapWidth = document.body.clientWidth - displayElem.offsetWidth / (3 - numberOfWords) - 20
+}
+initSizes()
+
+addEventListener("resize", e => {
+    // initSizes()
+    // renderModule()
+})
+
+
 function div(parent, indentation, code, text) {
     console.assert(indentation >= 0, `Non-negative indentation. Got ${indentation}`)
     const indentationSize = 2
@@ -70,8 +89,11 @@ if (moduleName) {
 }
 
 function renderModule(moduleView) {
+    while(displayElem.firstChild) {
+        displayElem.removeChild(displayElem.firstChild)
+    }
+
     const wordWidth = 8
-    const numberOfWords = 2
     const widthOfLine = wordWidth * numberOfWords
     for (let i = 0; i < moduleView.length; i++) {
         printByte(moduleView[i])
@@ -83,14 +105,17 @@ function renderModule(moduleView) {
         }
     }
     const ctx = canvasElem.getContext("2d", {alpha: false})
-    const scale = 2
+    // const scale = 2
     const padding = 4
     const widthOfDot = 3
     const widthOfSpace = 1
     const numberOfBitsInByte = 8
     const width = widthOfLine * numberOfBitsInByte
     const height = Math.ceil(moduleView.length / widthOfLine)
-    canvasElem.width = (padding * 2 + (width + Math.ceil(width / wordWidth) - 1 + (numberOfWords - 1) * 2) * (widthOfDot + widthOfSpace) - widthOfSpace) * scale
+
+    const canvasElemWidth = (padding * 2 + (width + Math.ceil(width / wordWidth) - 1 + (numberOfWords - 1) * 2) * (widthOfDot + widthOfSpace) - widthOfSpace)
+    const scale = bitmapWidth / canvasElemWidth
+    canvasElem.width = canvasElemWidth * scale
     canvasElem.height = (padding * 2 + (2 * height - 1) * (widthOfDot + widthOfSpace) - widthOfSpace) * scale
     ctx.fillStyle = "white"
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height)
