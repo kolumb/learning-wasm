@@ -54,6 +54,17 @@ function printByte(byte) {
     displayElem.appendChild(span)
 }
 
+function getValue(view, index) {
+    let numOfBytesInNumber = 1
+    const firstByte = view[index]
+    let value = firstByte
+    if (firstByte > 63) {
+        numOfBytesInNumber++
+        value -= 128
+    }
+    return [numOfBytesInNumber, value]
+}
+
 const byte2type = {
     0x7f: "i32",
     0x7e: "i64",
@@ -452,13 +463,14 @@ function reportModule(e) {
                 indent--
                 break
             case 0x0c: {
-                const argument = byte
+                // TODO: Check if block type detection is right
+                const argument = nextByte
                 const continueOrBreak = blockStack[blockStack.length - argument- 1] === blockTypes.loop ? "continue loop" : "break"
                 div(report, indent, `${byte} ${nextByteStr}`, `br (${continueOrBreak} block with index ${argument} from end)`)
                 state = states.skip
                 } break
             case 0x0d: {
-                const argument = byte
+                const argument = nextByte
                 const continueOrBreak = blockStack[blockStack.length - argument- 1] === blockTypes.loop ? "continue loop" : "break"
                 div(report, indent, `${byte} ${nextByteStr}`, `br_if (${continueOrBreak} block with index ${argument} from end if comparison was successful)`)
                 state = states.skip
@@ -478,12 +490,23 @@ function reportModule(e) {
                 div(report, indent, `${byteStr} ${nextByteStr}`, `local.tee (pop value from stack to variable with index ${nextByte} and put it back on stack)`)
                 state = states.skip
                 break
+            case 0x28:
+                div(report, indent, byteStr, `load (pop from stack index of memory and put on stack a value that's stored there)`)
+                break
+            case 0x36:
+                div(report, indent, byteStr, `i32.store (pop from stack index of memory and a value that will be stored there)`)
+                break
             case 0x41:
                 div(report, indent, `${byteStr} ${nextByteStr}`, `i32.const (push constant value ${nextByte} on stack)`)
+                // const [numOfBytesInNumber, value] = getValue(moduleView, i + 1)
+                // div(report, indent, `${byteStr} ${nextByteStr}`, `i32.const ${numOfBytesInNumber}(push constant value ${value} on stack)`)
                 state = states.skip
                 break
             case 0x4c:
                 div(report, indent, byteStr, `i32.le_s (pop two values from stack and compare them with <=)`)
+                break
+            case 0x4e:
+                div(report, indent, byteStr, `i32.ge_s (pop two values from stack and compare them with >=)`)
                 break
             case 0x69:
                 div(report, indent, byteStr, `i32.popcnt (count bites that == 1)`)
