@@ -37,7 +37,7 @@ Build only specific ones:
 | 07     | export           | func from stack
 | 60     | param            | indexed (name is optional)
 | __     | result           | accepts a type
-| 40     |                  | pseudo type for block
+| 40     | __               | pseudo type for block
 | 02     | block            | start block of code. May or my not return a value. (can accept a label?)
 | 03     | loop             | start block that can be used as a loop if you break from it. (can accept a label?)
 | 0b     | end              | end block of code

@@ -64,9 +64,13 @@ const list = sources.reduce((acc, file)=>{
 const indexPage = `<!DOCTYPE html><html>
 <head><meta charset="utf-8"><title>List of compiled modules</title></head>
 <body>
-    <p>Executor <a href="./inspector/">Inspector</a></p>
-    <p>List of modules for execution:</p>
-    <ul>${list}</ul>
+    <main class="wrapper">
+        <section>
+            <p>Executor <a href="./inspector/">Inspector</a></p>
+            <p>List of modules for execution:</p>
+            <ul>${list}</ul>
+        </section>
+    </main>
 
     <script>
         // Fix links for local pages.
