@@ -1,6 +1,7 @@
 "use strict"
 
 const sourceCodeLink = document.querySelector("#SourceCodeLink")
+const themeTogglerElem = document.querySelector("#ThemeTogglerElem")
 const listOfModulesElem = document.querySelector("#ListOfModulesElem")
 const displayElem = document.querySelector("#DisplayElem")
 const canvasElem = document.querySelector("#CanvasElem")
@@ -8,6 +9,18 @@ const report = document.querySelector("#ReportElem")
 
 let bitmapWidth
 let numberOfWords
+let theme = localStorage.getItem("wasm-inspector-dark-theme") ?? "dark"
+let dark = theme === "dark"
+themeTogglerElem.textContent = dark ? "Light theme" : "Dark theme"
+if (dark) {
+    document.body.classList.add("dark")
+} else {
+    document.body.classList.remove("dark")
+}
+
+themeTogglerElem.addEventListener("click", e => {
+    localStorage.setItem("wasm-inspector-dark-theme", dark ? "light" : "dark")
+})
 
 function initSizes() {
     if (document.body.clientWidth < 1000) {
@@ -128,16 +141,16 @@ function renderModule(moduleView) {
     const scale = bitmapWidth / canvasElemWidth
     canvasElem.width = canvasElemWidth * scale
     canvasElem.height = (padding * 2 + (2 * height - 1) * (widthOfDot + widthOfSpace) - widthOfSpace) * scale
-    ctx.fillStyle = "white"
+    ctx.fillStyle = dark ? "#3B4252" : "#D8DEE9"
     ctx.fillRect(0, 0, canvasElem.width, canvasElem.height)
     for (let i = 0; i < moduleView.length; i++) {
         const x = (i * numberOfBitsInByte) % width
         const y = Math.floor((i * numberOfBitsInByte) / width)
         for (let j = 0; j < numberOfBitsInByte; j++) {
             if (moduleView[i] & 2 ** j) {
-                ctx.fillStyle = "black"
+                ctx.fillStyle = dark ? "#E5E9F0" : "#434C5E"
             } else {
-                ctx.fillStyle = "lightgrey"
+                ctx.fillStyle = dark ? "#1c1f26" : "white"
             }
             ctx.fillRect(
                 (padding + (x + j + Math.floor(x / numberOfBitsInByte) + 2 * Math.floor(x / (wordWidth * numberOfBitsInByte))) * (widthOfDot + widthOfSpace)) * scale,

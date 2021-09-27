@@ -4,20 +4,68 @@
     <meta charset="utf-8">
     <title>Wasm file inspector</title>
     <style>
+    /* Color values taken from https://www.nordtheme.com/ */
+    body {
+        color: #2E3440;
+        background: #ECEFF4;
+    }
+        body.dark {
+            color-scheme: dark;
+            color: #D8DEE9;
+            background: #2E3440;
+        }
+    a {
+        color: #5E81AC;
+    }
+    body a:hover {
+        color: black;
+    }
+    a:visited {
+        color: #4C566A;
+    }
+        .dark a {
+            color: #5E81AC;
+        }
+        body.dark a:hover {
+            color: white;
+        }
+        .dark a:visited {
+            color: #88C0D0;
+        }
     .wrapper {
         display: flex;
         flex-wrap: wrap;
     }
-    .current-module {
+    .wrapper > section {
+        position: relative;
+    }
+    #ThemeTogglerElem {
+        position: absolute;
+        right: 1em;
+        top: 0;
+    }
+    a.current-module {
         color: black;
         text-decoration: none;
     }
+        .dark a.current-module {
+            color: white;
+        }
     #CanvasElem {
-        outline: 1px solid lightgrey;
+        outline: 1px solid #D8DEE9;
     }
+        .dark #CanvasElem {
+            outline: 1px solid #4C566A;
+        }
     #ReportElem {
         margin: 2em 0 1em 2em;
     }
+    #ReportElem > div:hover {
+        background: #D8DEE9;
+    }
+        .dark #ReportElem > div:hover {
+            background: #3B4252;
+        }
     #ReportElem pre {
         display: inline;
     }
@@ -41,10 +89,10 @@
     <script defer src="module-names.js"></script>
     <script defer src="inspector.js"></script>
 </head>
-<body>
+<body class="dark">
     <main class="wrapper">
         <section>
-            <p><a href="../executor.html">Executor</a> Inspector <a id="SourceCodeLink" href="">Source</a></p>
+            <p><a href="../executor.html">Executor</a> Inspector <a id="SourceCodeLink" href="">Source</a> <a id="ThemeTogglerElem"></a></p>
             <p>List of modules for inspecting:</p>
             <nav>
                 <ul id="ListOfModulesElem"></ul>
