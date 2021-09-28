@@ -37,11 +37,11 @@ modulesToBuild.map(moduleName => {
     }
 
     // if (!fs.existsSync(folderName + "/index.html")) {
-        const htmlCode = fs.readFileSync("./template/index-template.html").toString().replace(/MODULE_NAME/g, moduleName);
+        const htmlCode = fs.readFileSync("./templates/index-template.html").toString().replace(/MODULE_NAME/g, moduleName);
         fs.writeFileSync(folderName + "/index.html", htmlCode);
     // }
     if (!fs.existsSync(folderName + "/script.js")) {
-        const jsCode = fs.readFileSync("./template/script-template.js").toString().replace(/MODULE_NAME/g, moduleName);
+        const jsCode = fs.readFileSync("./templates/script-template.js").toString().replace(/MODULE_NAME/g, moduleName);
         fs.writeFileSync(folderName + "/script.js", jsCode);
     }
 
@@ -61,25 +61,8 @@ const list = sources.reduce((acc, file)=>{
         ? `<li><a href="${folderName}/">${folderName}</a></li>`
         : '');
 }, "");
-const indexPage = `<!DOCTYPE html><html>
-<head><meta charset="utf-8"><title>List of compiled modules</title></head>
-<body>
-    <main class="wrapper">
-        <section>
-            <p>Executor <a href="./inspector/">Inspector</a></p>
-            <p>List of modules for execution:</p>
-            <ul>${list}</ul>
-        </section>
-    </main>
+const indexPage = fs.readFileSync("./templates/executor-template.html").toString().replace(/LIST_OF_MODULES/g, list)
 
-    <script>
-        // Fix links for local pages.
-        if (location.protocol === "file:") {
-            Array.from(document.querySelectorAll("a")).forEach(a => a.href = a.href.replace(/\\/$/, "/index.html"))
-        }
-    </script>
-</body>
-</html>`;
 fs.writeFileSync("./executor.html", indexPage);
 
 fs.writeFileSync("./inspector/module-names.js", `"use strict";\nmoduleNames = ${JSON.stringify(moduleNames)};\n`);
