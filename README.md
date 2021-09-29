@@ -1,6 +1,6 @@
 Minimalistic playground to learn WebAssembly text format.
 
-Demo: [https://kolumb.github.io/learning-wasm/executor.html](https://kolumb.github.io/learning-wasm/executor.html)
+Demo: [https://kolumb.github.io/learning-wasm/build/](https://kolumb.github.io/learning-wasm/build/)
 
 Dependencies:
 - [Node.js](https://nodejs.org/)
@@ -11,8 +11,8 @@ Dependencies:
 
 * Create `<module-name>.wat` file in `src` folder with module.
 * [Build](#build) this module.
-* Write js code that uses the module in `module-name/script.js`.
-* Launch `executor.html` in browser. No need to start http-server.
+* Write js code that uses the module in `build/<module-name>/script.js`.
+* Launch `./build/index.html` in browser. No need to start http-server.
 
 <a name="build"></a>
 ### Build

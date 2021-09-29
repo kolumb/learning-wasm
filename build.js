@@ -4,6 +4,7 @@ const { execSync } = require('child_process');
 const moduleNames = []
 let modulesToBuild = []
 const sourceFolder = "./src/"
+const buildFolder = "./build/"
 const sources = fs.readdirSync(sourceFolder).filter(file => file.endsWith(".wat"));
 Array.prototype.push.apply(moduleNames, sources.map(source => source.slice(0, -4)));
 if(process.argv.length < 3) {
@@ -15,7 +16,7 @@ if(process.argv.length < 3) {
 }
 
 modulesToBuild.map(moduleName => {
-    const folderName = "./" + moduleName;
+    const folderName = buildFolder + moduleName;
     if (!fs.existsSync(sourceFolder + moduleName + ".wat")) {
         if(sources.length > 0) {
             console.log(sourceFolder + moduleName + ".wat not found. Avaiable sources are:")
@@ -57,12 +58,12 @@ const moduleBuffer = Uint8Array.from(atob("${wasmModule}"), c => c.charCodeAt(0)
 const list = sources.reduce((acc, file)=>{
     const folderName = file.slice(0, -4);
     return acc
-        + (fs.existsSync(folderName + "/index.html")
+        + (fs.existsSync(buildFolder + folderName + "/index.html")
         ? `<li><a href="${folderName}/">${folderName}</a></li>`
         : '');
 }, "");
-const indexPage = fs.readFileSync("./templates/executor-template.html").toString().replace(/LIST_OF_MODULES/g, list)
+const executerPage = fs.readFileSync("./templates/executor-template.html").toString().replace(/LIST_OF_MODULES/g, list)
 
-fs.writeFileSync("./executor.html", indexPage);
+fs.writeFileSync(buildFolder + "index.html", executerPage);
 
 fs.writeFileSync("./inspector/module-names.js", `"use strict";\nmoduleNames = ${JSON.stringify(moduleNames)};\n`);

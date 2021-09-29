@@ -107,7 +107,7 @@ moduleNames && moduleNames.forEach(name => {
 
 if (moduleName) {
     const scriptElem = document.createElement("script")
-    scriptElem.src = `../${moduleName}/wasm-module-${moduleName}.js`
+    scriptElem.src = `../build/${moduleName}/wasm-module-${moduleName}.js`
     document.body.appendChild(scriptElem)
     scriptElem.addEventListener("load", reportModule)
 }
